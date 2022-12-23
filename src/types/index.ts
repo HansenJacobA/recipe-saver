@@ -3,31 +3,18 @@ export interface NavBarLinkNameAndUrl {
   url: string;
 }
 
-export interface Rule {
-  rule?: string;
-  timesUsed?: number;
-  timesUsedPercentage?: number;
-  ruleReviewed?: boolean;
-}
-
-export interface Strategy {
-  rules?: Rule[];
-}
-
-export interface Lesson {
-  lesson: string;
-  upVotes: number;
-  downVotes: number;
-  createdAt: string;
-}
-
-export interface Profile {
-  strategy?: Strategy;
-  strategiesUsedPercentage?: number;
-  strategyReviewed?: boolean;
-  numStrategyReviews?: number;
-  dateLastStrategyReview?: string;
+export interface Recipe {
+  ingredients: string[];
+  directions: string[];
+  category?: string;
+  description?: string;
+  rating?: number;
+  inspiredBy?: string;
+  images?: [];
+  prepTime?: number;
+  cookTime?: number;
+  totalTime?: number;
+  servings?: number;
   notes?: string[];
-  lessons?: Lesson[];
-  topThreeLessons?: Lesson[];
+  reviews?: string[];
 }

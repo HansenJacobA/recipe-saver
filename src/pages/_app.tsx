@@ -7,7 +7,7 @@ import { theme } from "../styles/theme";
 function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <Script src="/sw-register.js" />
+      {/* <Script src="/sw-register.js" /> */}
       <Component {...pageProps} />
     </ChakraProvider>
   );

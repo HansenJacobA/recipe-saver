@@ -15,16 +15,13 @@ export default function Template() {
       <Title />
       <NavBar />
       <Head>
-        <title>Refine💎</title>
-        <meta property="og:title" content="Refine💎" key="title" />
+        <title>Reci✌🏼</title>
+        <meta property="og:title" content="Reci✌🏼" key="title" />
         <meta
           name="description"
-          content="Use this application to enhance your trading career."
+          content="Use this application to record recipes and look at pigs and cows."
         />
-        <meta
-          name="keywords"
-          content="stocks personal growth trading finance investing reflection self-improvement career"
-        />
+        <meta name="keywords" content="pigs cows and recipes" />
         <link rel="manifest" href="app.webmanifest" />
         <link rel="apple-touch-icon" href="/icons/icon-512.png" />
         <meta name="theme-color" content="#1A202C" />

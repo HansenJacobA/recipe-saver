@@ -11,10 +11,10 @@ export default function NavBar() {
       justify="center"
       gap={10}
       p={3}
-      bgColor="#4c5667"
+      bgColor="#ff89e0"
       color="white"
-      fontWeight="light"
-      fontSize={18}
+      fontWeight="extrabold"
+      fontSize={20}
     >
       {navBarLinkNames.map(({ linkName, url }: NavBarLinkNameAndUrl) => {
         return (

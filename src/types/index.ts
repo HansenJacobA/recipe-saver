@@ -4,8 +4,8 @@ export interface NavBarLinkNameAndUrl {
 }
 
 export interface Recipe {
-  ingredients: string[];
-  directions: string[];
+  ingredients?: string[];
+  directions?: string[];
   category?: string;
   description?: string;
   inspiredBy?: string;

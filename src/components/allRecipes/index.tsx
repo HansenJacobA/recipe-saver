@@ -1,23 +1,21 @@
 import {
-  Card,
-  Flex,
-  Input,
-  Text,
-  CardBody,
   Button,
+  Card,
+  CardBody,
+  Fade,
+  Flex,
   Radio,
   RadioGroup,
   Stack,
+  Text,
   Textarea,
 } from "@chakra-ui/react";
-import Template from "../../components/template";
-import { useState, useEffect } from "react";
-import getValueByKey from "../../utilities/getValueByKey";
+import { useEffect, useState } from "react";
 import { Recipe, Review } from "../../types";
+import getValueByKey from "../../utilities/getValueByKey";
 import setValueByKey from "../../utilities/setValueByKey";
 
-export default function Search() {
-  const [selectedCategory, setSelectedCategory] = useState("none");
+export default function Recipes() {
   const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
   const [newNote, setNewNote] = useState("");
   const [newReview, setNewReview] = useState("");
@@ -25,44 +23,24 @@ export default function Search() {
 
   useEffect(() => {
     const recipes = getValueByKey("recipeHistory");
-    setAllRecipes(recipes);
+    setAllRecipes(recipes || []);
   }, []);
 
+  useEffect(() => {
+    //
+  }, [allRecipes]);
+
   return (
-    <Flex
-      justify="center"
-      align="center"
-      direction="column"
-      gap={5}
-      mb={10}
-      w={300}
-    >
-      <Template />
-      <Text fontSize={20} fontWeight="light">
-        Browse Recipes by Category 📖
-      </Text>
+    <Flex direction="column" gap={5}>
+      <Fade in={true}>
+        <Text textAlign="center" fontWeight="light" fontSize={20}>
+          All Stored Recipes
+        </Text>
+      </Fade>
 
-      <Flex>
-        <Input
-          type="text"
-          onChange={(e) => setSelectedCategory(e.target.value.toLowerCase())}
-          list="catagories"
-          placeholder="Select catagory"
-        />
-        <datalist id="catagories">
-          {allRecipes
-            .filter(({ category }) => category.includes(selectedCategory))
-            .map(({ category }, index) => (
-              <option value={category} key={index} />
-            ))}
-          ;
-        </datalist>
-      </Flex>
-
-      <Flex direction="column" gap={5}>
-        {allRecipes
-          .filter(({ category }) => category.includes(selectedCategory))
-          .map((recipe, recipeIndex) => (
+      <Fade in={true}>
+        <Flex gap={5} direction="column">
+          {allRecipes?.map((recipe: Recipe, recipeIndex: number) => (
             <Card key={recipeIndex} w={300}>
               <CardBody>
                 <Flex direction="column" gap={5}>
@@ -256,7 +234,8 @@ export default function Search() {
               </CardBody>
             </Card>
           ))}
-      </Flex>
+        </Flex>
+      </Fade>
     </Flex>
   );
 }

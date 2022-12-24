@@ -9,19 +9,22 @@ import {
   Radio,
   RadioGroup,
   Stack,
+  Card,
+  useToast,
 } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import NextLink from "next/link";
+import { Link } from "@chakra-ui/react";
 import { Review } from "../../types";
 import { addRecipe } from "../../utilities/recipe";
 
 export default function AddNewRecipe() {
-  const [showInputs, setShowInputs] = useState(false);
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [newIngredient, setNewIngredient] = useState("");
   const [directions, setDirections] = useState([]);
-  const [newDescription, setNewDescription] = useState("");
+  const [newDirectionStep, setNewDirectionStep] = useState("");
   const [prepTime, setPrepTime] = useState("");
   const [cookTime, setCookTime] = useState("");
   const [servings, setServings] = useState("");
@@ -31,13 +34,7 @@ export default function AddNewRecipe() {
   const [rating, setRating] = useState("");
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState("");
-  const [recipeSubmitted, setRecipeSubmitted] = useState(false);
-
-  useEffect(() => {
-    setTimeout(function replaceGreeting() {
-      setShowInputs(true);
-    }, 1000);
-  }, [recipeSubmitted]);
+  const toast = useToast();
 
   return (
     <Flex direction="column" gap={5} w={300}>
@@ -52,15 +49,14 @@ export default function AddNewRecipe() {
           Lets add a new recipe,
         </Heading>
       </Fade>
-
-      {showInputs ? (
+      {
         <Fade in={true}>
           <Flex direction="column" gap={5} w={300}>
             <Input
               placeholder="Category"
               value={category}
               onChange={function updateCategory({ target }) {
-                setCategory(target.value);
+                setCategory(target.value.toLowerCase());
               }}
             />
 
@@ -72,13 +68,7 @@ export default function AddNewRecipe() {
               }}
             />
 
-            <Flex
-              direction="column"
-              gap={5}
-              border="1px"
-              p={3}
-              borderRadius={15}
-            >
+            <Card direction="column" gap={5} p={3}>
               <Flex direction="column" gap={5}>
                 {ingredients.length ? (
                   ingredients.map((ingredient: string, index: number) => (
@@ -106,6 +96,7 @@ export default function AddNewRecipe() {
               <Button
                 size="sm"
                 onClick={function addIngredient() {
+                  if (newIngredient === "") return;
                   const newIngredients = [...ingredients];
                   newIngredients.push(newIngredient);
                   setIngredients(newIngredients);
@@ -114,15 +105,9 @@ export default function AddNewRecipe() {
               >
                 Add Ingredient
               </Button>
-            </Flex>
+            </Card>
 
-            <Flex
-              direction="column"
-              gap={5}
-              border="1px"
-              p={3}
-              borderRadius={15}
-            >
+            <Card direction="column" gap={5} p={3}>
               <Flex direction="column" gap={5}>
                 {directions.length ? (
                   directions.map((step: string, index: number) => (
@@ -143,22 +128,23 @@ export default function AddNewRecipe() {
               <Input
                 placeholder="Directions"
                 onChange={function updateNewDirection({ target }) {
-                  setNewDescription(target.value);
+                  setNewDirectionStep(target.value);
                 }}
-                value={newDescription}
+                value={newDirectionStep}
               />
               <Button
                 size="sm"
                 onClick={function addDirectionStep() {
+                  if (newDirectionStep === "") return;
                   const newDirections = [...directions];
-                  newDirections.push(newDescription);
+                  newDirections.push(newDirectionStep);
                   setDirections(newDirections);
-                  setNewDescription("");
+                  setNewDirectionStep("");
                 }}
               >
                 Add Step
               </Button>
-            </Flex>
+            </Card>
 
             <Input
               placeholder="Prep Time"
@@ -192,17 +178,11 @@ export default function AddNewRecipe() {
               }}
             />
 
-            <Flex
-              direction="column"
-              gap={5}
-              border="1px"
-              p={3}
-              borderRadius={15}
-            >
+            <Card direction="column" gap={5} p={3}>
               {reviews.length
                 ? reviews.map((review: Review, index: number) => (
                     <Flex key={index} direction="column">
-                      <Flex align="center" gap={2}>
+                      <Flex align="center" justify="space-between">
                         <Text>
                           {new Array(parseInt(review.rating))
                             .fill("⭑")
@@ -235,6 +215,7 @@ export default function AddNewRecipe() {
               <Button
                 size="sm"
                 onClick={function updateReviews() {
+                  if (newReview === "" && rating === "") return;
                   const newReviews = [...reviews];
                   newReviews.unshift({
                     review: newReview,
@@ -248,15 +229,9 @@ export default function AddNewRecipe() {
               >
                 Add Review
               </Button>
-            </Flex>
+            </Card>
 
-            <Flex
-              direction="column"
-              gap={5}
-              border="1px"
-              p={3}
-              borderRadius={15}
-            >
+            <Card direction="column" gap={5} p={3}>
               {notes.length
                 ? notes.map((note: string, index: number) => (
                     <Flex key={index} gap={2}>
@@ -275,6 +250,7 @@ export default function AddNewRecipe() {
               <Button
                 size="sm"
                 onClick={function updateNewNote() {
+                  if (newNote === "") return;
                   const newNotes = [...notes];
                   newNotes.push(newNote);
                   setNotes(newNotes);
@@ -283,11 +259,10 @@ export default function AddNewRecipe() {
               >
                 Add Note
               </Button>
-            </Flex>
+            </Card>
 
             <Button
               onClick={function submitNewRecipe() {
-                if (!directions.length || !ingredients.length) return;
                 addRecipe({
                   category,
                   description,
@@ -301,14 +276,24 @@ export default function AddNewRecipe() {
                   reviews,
                 });
 
-                setRecipeSubmitted(!recipeSubmitted);
+                toast({
+                  title: "Recipe added.",
+                  description: "Your recipe has been saved.",
+                  status: "success",
+                  duration: 4000,
+                  isClosable: true,
+                });
               }}
             >
-              Add Recipe
+              {
+                <Link as={NextLink} href="/home">
+                  Add Recipe
+                </Link>
+              }
             </Button>
           </Flex>
         </Fade>
-      ) : null}
+      }
     </Flex>
   );
 }

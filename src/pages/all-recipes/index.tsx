@@ -1,8 +1,8 @@
 import { Flex } from "@chakra-ui/react";
 import Template from "../../components/template";
-import Greeting from "../../components/greeting";
+import Recipes from "../../components/allRecipes";
 
-export default function History() {
+export default function AllRecipes() {
   return (
     <Flex
       justify="center"
@@ -13,7 +13,7 @@ export default function History() {
       w={300}
     >
       <Template />
-      <Greeting />
+      <Recipes />
     </Flex>
   );
 }

@@ -8,13 +8,16 @@ export interface Recipe {
   directions: string[];
   category?: string;
   description?: string;
-  rating?: number;
   inspiredBy?: string;
-  images?: [];
-  prepTime?: number;
-  cookTime?: number;
-  totalTime?: number;
-  servings?: number;
+  prepTime?: string;
+  cookTime?: string;
+  servings?: string;
   notes?: string[];
-  reviews?: string[];
+  reviews?: Review[];
+}
+
+export interface Review {
+  rating?: string;
+  review?: string;
+  date: string;
 }

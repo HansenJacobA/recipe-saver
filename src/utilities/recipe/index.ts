@@ -3,29 +3,31 @@ import getValueByKey from "../getValueByKey";
 import setValueByKey from "../setValueByKey";
 
 export const templateRecipe: Recipe = {
-  ingredients: [],
-  directions: [],
   category: "",
   description: "",
-  rating: 0,
+  ingredients: [],
+  directions: [],
+  prepTime: "",
+  cookTime: "",
+  servings: "",
   inspiredBy: "",
-  images: [],
-  prepTime: 0,
-  cookTime: 0,
-  totalTime: 0,
-  servings: 0,
   notes: [],
   reviews: [],
 };
 
-export const addRecipe = (recipe: Recipe) => {
+export const addRecipe = (recipe: Recipe): void => {
   const recipeHistory = getValueByKey("recipeHistory");
-  recipeHistory.push(recipe);
+  recipeHistory.unshift(recipe);
   setValueByKey("recipeHistory", recipeHistory);
 };
 
-export const removeRecipeByIndex = (index: number) => {
+export const removeRecipeByIndex = (index: number): void => {
   const recipeHistory = getValueByKey("recipeHistory");
   recipeHistory.splice(index, 1);
   setValueByKey("recipeHistory", recipeHistory);
+};
+
+export const getRecipeHistory = (): Recipe[] => {
+  const recipeHistory = getValueByKey("recipeHistory");
+  return recipeHistory;
 };

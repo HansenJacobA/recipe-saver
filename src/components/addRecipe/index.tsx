@@ -12,13 +12,18 @@ import {
   Card,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NextLink from "next/link";
 import { Link } from "@chakra-ui/react";
-import { Review } from "../../types";
-import { addRecipe } from "../../utilities/recipe";
+import { Recipe, Review } from "../../types";
+import { upsertRecipeByIndex } from "../../utilities/recipe";
+import getValueByKey from "../../utilities/getValueByKey";
 
-export default function AddNewRecipe() {
+export default function AddNewRecipe({
+  editIndex = -1,
+}: {
+  editIndex?: number;
+}) {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [ingredients, setIngredients] = useState<string[]>([]);
@@ -34,7 +39,26 @@ export default function AddNewRecipe() {
   const [rating, setRating] = useState("");
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState("");
+  const [editing, setEditing] = useState(false);
   const toast = useToast();
+
+  useEffect(() => {
+    if (editIndex > -1) {
+      setEditing(true);
+      const recipes = getValueByKey("recipeHistory");
+      const recipe: Recipe = recipes[editIndex];
+      setCategory(recipe?.category || "");
+      setDescription(recipe?.description || "");
+      setIngredients(recipe?.ingredients || []);
+      setDirections(recipe?.directions || []);
+      setPrepTime(recipe?.prepTime || "");
+      setCookTime(recipe?.cookTime || "");
+      setServings(recipe?.servings || "");
+      setInspiredBy(recipe?.inspiredBy || "");
+      setNotes(recipe?.notes || []);
+      setReviews(recipe?.reviews || []);
+    }
+  }, [editIndex]);
 
   return (
     <Flex direction="column" gap={5} w={300}>
@@ -46,7 +70,7 @@ export default function AddNewRecipe() {
           textAlign="center"
           fontWeight="light"
         >
-          Lets add a new recipe,
+          {!editing ? "Lets add a new recipe," : "Lets edit this recipe"}
         </Heading>
       </Fade>
       {
@@ -56,7 +80,7 @@ export default function AddNewRecipe() {
               placeholder="Category"
               value={category}
               onChange={function updateCategory({ target }) {
-                setCategory(target.value.toLowerCase());
+                setCategory(target.value);
               }}
             />
 
@@ -261,36 +285,37 @@ export default function AddNewRecipe() {
               </Button>
             </Card>
 
-            <Button
-              onClick={function submitNewRecipe() {
-                addRecipe({
-                  category,
-                  description,
-                  ingredients,
-                  directions,
-                  prepTime,
-                  cookTime,
-                  servings,
-                  inspiredBy,
-                  notes,
-                  reviews,
-                });
+            <Link as={NextLink} href="/home">
+              <Button
+                onClick={function submitNewRecipe() {
+                  upsertRecipeByIndex(
+                    {
+                      category,
+                      description,
+                      ingredients,
+                      directions,
+                      prepTime,
+                      cookTime,
+                      servings,
+                      inspiredBy,
+                      notes,
+                      reviews,
+                    },
+                    editing ? editIndex : -1
+                  );
 
-                toast({
-                  title: "Recipe added.",
-                  description: "Your recipe has been saved.",
-                  status: "success",
-                  duration: 4000,
-                  isClosable: true,
-                });
-              }}
-            >
-              {
-                <Link as={NextLink} href="/home">
-                  Add Recipe
-                </Link>
-              }
-            </Button>
+                  toast({
+                    title: editing ? "Recipe updated." : "Recipe added.",
+                    description: "Your recipe has been saved.",
+                    status: "success",
+                    duration: 4000,
+                    isClosable: true,
+                  });
+                }}
+              >
+                {editing ? "Update Recipe" : "Add Recipe"}
+              </Button>
+            </Link>
           </Flex>
         </Fade>
       }

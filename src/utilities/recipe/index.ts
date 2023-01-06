@@ -15,9 +15,13 @@ export const templateRecipe: Recipe = {
   reviews: [],
 };
 
-export const addRecipe = (recipe: Recipe): void => {
+export const upsertRecipeByIndex = (recipe: Recipe, index: number): void => {
   const recipeHistory = getValueByKey("recipeHistory");
-  recipeHistory.unshift(recipe);
+  if (index < recipeHistory.length) {
+    recipeHistory[index] = recipe;
+  } else if (index === -1) {
+    recipeHistory.unshift(recipe);
+  }
   setValueByKey("recipeHistory", recipeHistory);
 };
 
